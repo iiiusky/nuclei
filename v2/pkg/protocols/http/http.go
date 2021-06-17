@@ -72,7 +72,8 @@ type Request struct {
 	// ReqCondition automatically assigns numbers to requests and preserves
 	// their history for being matched at the end.
 	// Currently only works with sequential http requests.
-	ReqCondition bool `yaml:"req-condition"`
+	ReqCondition bool                   `yaml:"req-condition"`
+	Vars         map[string]interface{} `yaml:"vars"`
 }
 
 // GetID returns the unique ID of the request if any.

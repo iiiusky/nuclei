@@ -127,4 +127,6 @@ type Options struct {
 	NewTemplates bool
 	// NoInteractsh disables use of interactsh server for interaction polling
 	NoInteractsh bool
+	// ExploitMode disables use of interactsh server for interaction polling
+	ExploitMode bool
 }

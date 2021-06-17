@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"fmt"
+	"github.com/projectdiscovery/nuclei/v2/pkg/protocols/common/replacer"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -253,6 +254,8 @@ const drainReqSize = int64(8 * 1024)
 func (r *Request) executeRequest(reqURL string, request *generatedRequest, previous output.InternalEvent, callback protocols.OutputEventCallback, requestCount int) error {
 	r.setCustomHeaders(request)
 
+	r.setVars(request)
+
 	var (
 		resp          *http.Response
 		fromcache     bool
@@ -442,6 +445,18 @@ func (r *Request) setCustomHeaders(req *generatedRequest) {
 			if kk == "Host" {
 				req.request.Host = vv
 			}
+		}
+	}
+}
+
+// setCustomHeaders sets the custom headers for generated request
+func (r *Request) setVars(req *generatedRequest) {
+	req.request.Request.URL.Path = replacer.Replace(req.request.Request.URL.Path, req.original.Vars)
+	req.request.Request.URL.RawQuery = replacer.Replace(req.request.Request.URL.RawQuery, req.original.Vars)
+
+	for k, v := range r.customHeaders {
+		if req.rawRequest != nil {
+			req.rawRequest.Headers[k] = replacer.Replace(req.rawRequest.Headers[v], req.original.Vars)
 		}
 	}
 }
